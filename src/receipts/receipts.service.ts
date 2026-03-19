@@ -1,0 +1,47 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateReceiptDto } from './dto/create-receipt.dto';
+import { UpdateReceiptDto } from './dto/update-receipt.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Receipt } from './entities/receipt.entity';
+
+@Injectable()
+export class ReceiptsService {
+  constructor(
+    @InjectRepository(Receipt)
+    private readonly receiptRepo: Repository<Receipt>,
+  ) {}
+
+  create(createReceiptDto: CreateReceiptDto) {
+    const receipt = this.receiptRepo.create({
+      issuedAt: new Date(createReceiptDto.issuedAt),
+      name: createReceiptDto.name,
+      price: createReceiptDto.price,
+    });
+    return this.receiptRepo.save(receipt);
+  }
+
+  async findAll() {
+    return this.receiptRepo.find({ order: { issuedAt: 'DESC'}});
+  }
+
+  async findOne(receiptId: number) {
+    const receipt = await this.receiptRepo.findOne( { where: { receiptId } });
+    if (!receipt) throw new NotFoundException('Receipt Not Found');
+    return receipt;
+  }
+
+  async update(receiptId: number, dto: UpdateReceiptDto) {
+    const receipt = await this.findOne(receiptId);
+    
+    if (dto.issuedAt !== undefined) receipt.issuedAt = new Date(dto.issuedAt);
+    if (dto.name !== undefined) receipt.name = dto.name;
+    if (dto.price !== undefined) receipt.price = dto.price;
+  }
+
+  async remove(receiptId: number) {
+    const receipt = await this.findOne(receiptId);
+    await this.receiptRepo.remove(receipt);
+    return { deleted: true, receiptId };
+  }
+}

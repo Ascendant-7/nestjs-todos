@@ -12,10 +12,10 @@ export class Task {
     @Column({ nullable: true })
     description: string;
 
-    @Column({type: 'datetime', default: () => 'CURRENT_TIMESTAMP'})
+    @Column({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
     createdAt: Date;
 
-    @Column({type: 'datetime', nullable: true})
+    @Column({type: 'timestamp', nullable: true})
     compeletedAt: Date;
 
     @ManyToOne(() => User, user => user.tasks, { onDelete: 'CASCADE' })

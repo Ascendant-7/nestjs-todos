@@ -12,7 +12,7 @@ export class TasksController {
     return this.tasksService.create(createTaskDto);
   }
 
-  @Get()
+  @Get('/')
   findAll() {
     return this.tasksService.findAll();
   }
@@ -30,5 +30,31 @@ export class TasksController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.tasksService.remove(+id);
+  }
+
+  // code from teacher below
+
+  @Get('/:id')
+  getTask(@Param('id') id: string) {
+    return this.tasksService.getTask(id);
+  }
+  @Post('/')
+  createTask(@Body() body: any) {
+    return this.tasksService.createTask(body);
+  }
+
+  @Patch('/:id/done')
+  markTaskAsDone(@Body() body: any, @Param('id') id: string) {
+    return this.tasksService.updateTask(id, body);
+  }
+
+  @Patch('/:id/pending')
+  markTaskAsPending(@Body() body: any, @Param('id') id: string) {
+    return this.tasksService.updateTask(id, body);
+  }
+
+  @Delete('/:id')
+  deleteTask(@Param('id') id: string) {
+    return this.tasksService.deleteTask(id);
   }
 }
