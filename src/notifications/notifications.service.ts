@@ -1,11 +1,13 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
-import { OrdersService } from 'src/orders/orders.service';
+import { EVENT_PUBLISHER } from 'src/core/tokens';
+
+type EventPublisher = { publish: (event: string, payload: any) => void };
 
 @Injectable()
 export class NotificationsService {
-  constructor(@Inject(forwardRef(() => OrdersService)) private readonly ordersService: OrdersService) {}
+  constructor(@Inject(EVENT_PUBLISHER) private readonly publisher: EventPublisher) {}
 
   create(createNotificationDto: CreateNotificationDto) {
     return 'This action adds a new notification';
@@ -28,7 +30,7 @@ export class NotificationsService {
   }
 
   notify(event: string, payload: any) {
-    console.log(`[NOTIFY] ${event}`, payload);
+    this.publisher.publish(event, payload);
     return { ok: true };
   }
 }
