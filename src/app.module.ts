@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { TasksModule } from './tasks/tasks.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ReceiptsModule } from './receipts/receipts.module';
-import { ConfigModule } from '@nestjs/config';
+import { NotificationsModule } from './notifications/notifications.module';
+import { OrdersModule } from './orders/orders.module';
+import { CoreModule } from './core/core.module';
 
 @Module({
   imports: [
@@ -25,11 +28,12 @@ import { ConfigModule } from '@nestjs/config';
     }),
     UsersModule,
     TasksModule,
-    ReceiptsModule
+    ReceiptsModule,
+    NotificationsModule,
+    OrdersModule,
+    CoreModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
-
-console.log('username: ', process.env.DB_USER);
