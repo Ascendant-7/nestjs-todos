@@ -6,7 +6,7 @@ export class Receipt {
     receiptId: number;
 
     @Column()
-    issuedAt: Date
+    issuedAt: Date;
 
     @Column()
     name: string;

@@ -1,9 +1,6 @@
 import { IsDateString, IsString, IsNotEmpty, IsNumber, Min } from "class-validator";
 
 export class CreateReceiptDto {
-    @IsDateString()
-    issuedAt: string;
-
     @IsString()
     @IsNotEmpty()
     name: string;

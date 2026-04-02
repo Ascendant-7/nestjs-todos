@@ -4,21 +4,30 @@ import { UpdateReceiptDto } from './dto/update-receipt.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Receipt } from './entities/receipt.entity';
+import { NotificationsService } from 'src/notifications/notifications.service';
 
 @Injectable()
 export class ReceiptsService {
   constructor(
     @InjectRepository(Receipt)
     private readonly receiptRepo: Repository<Receipt>,
+    private readonly notifications: NotificationsService,
   ) {}
 
-  create(createReceiptDto: CreateReceiptDto) {
+  async create(createReceiptDto: CreateReceiptDto) {
     const receipt = this.receiptRepo.create({
-      issuedAt: new Date(createReceiptDto.issuedAt),
+      issuedAt: new Date(Date.now()),
       name: createReceiptDto.name,
       price: createReceiptDto.price,
     });
-    return this.receiptRepo.save(receipt);
+    const saved = await this.receiptRepo.save(receipt);
+
+    this.notifications.notify('receipt_created', {
+      receiptId: saved.receiptId,
+      price: saved.price
+    })
+
+    return saved;
   }
 
   async findAll() {
